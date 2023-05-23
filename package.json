@@ -4,21 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently 'yarn env:init' 'vite --host=0.0.0.0'",
-    "build": "concurrently 'yarn env:init' 'vite build'",
+    "dev": "vite --host=0.0.0.0",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
     "concurrently": "^8.0.1",
-    "vite": "^4.3.2"
+    "vite": "^4.3.2",
+    "cjstoesm": "^2.1.2"
   },
   "dependencies": {
+    "@loadable/component": "5.15.3",
     "@uirouter/react": "^1.0.7",
+    "arr-flatten": "^1.1.0",
     "diff": "^3.5.0",
+    "lodash-es": "^4.17.21",
+    "psl": "^1.8.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-loadable": "^5.5.0",
-    "lodash-es": "^4.17.21"
+    "react-dom": "^18.2.0"
   },
   "engines": {
     "node": ">=18.0.0"

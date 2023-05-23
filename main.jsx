@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
 import {
   UIRouter,
@@ -6,22 +6,9 @@ import {
   useSrefActive,
   pushStateLocationPlugin,
 } from "@uirouter/react";
-import Loadable from "react-loadable";
+import loadable from "@loadable/component";
 
-import("./style.css");
-import Hello from "./app/Hello";
-import About from "./app/About";
-
-const Test = Loadable({
-  loader: () => import("./app/Hello"),
-  loading: () => <div>loading</div>,
-});
-
-class MyComponent extends React.Component {
-  render() {
-    return <Test />;
-  }
-}
+import './style.css';
 
 const App = () => {
   const activeClass = "active";
@@ -37,26 +24,35 @@ const App = () => {
   );
 };
 
+const Hello = loadable(() => import('./app/Hello'));
+const About = loadable(() => import('./app/About'));
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <MyComponent />
-  // <UIRouter
-  //   plugins={[pushStateLocationPlugin]}
-  //   states={[
-  //     {
-  //       name: "hello",
-  //       url: "/hello",
-  //       component: Loadable({
-  //         loader: () => import("./app/Hello"),
-  //         loading() {
-  //           return <div>Loading...</div>;
-  //         },
-  //       }),
-  //       // lazyLoad: (trans, state) => import("./app/common1")
-  //       // lazyLoad: (trans, state) => import("./app/common1").then(() => import("./app/common2")),
-  //     },
-  //     { name: "about", url: "/about", component: Test },
-  //   ]}
-  // >
-  //   <App />
-  // </UIRouter>
+  <UIRouter
+    plugins={[pushStateLocationPlugin]}
+    states={[
+      {
+        name: "hello",
+        url: "/hello",
+        component: ()=> <Hello />,
+        // lazyLoad: (trans, state) => import("./app/common1")
+        // lazyLoad: (trans, state) => import("./app/common1").then(() => import("./app/common2")),
+      },
+      {
+        name: "about",
+        url: "/about",
+        component: ()=> <About />,
+      },
+      {
+        name: "world",
+        url: "/hello/:world",
+        component: ()=> <World />,
+        resolve: [{
+          deps: ['$transition$'],
+        }]
+      },
+    ]}
+  >
+    <App />
+  </UIRouter>
 );
