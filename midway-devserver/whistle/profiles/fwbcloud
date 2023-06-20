@@ -1,0 +1,29 @@
+/^https?:\/\/tim-qa\.waasonline\.com\/((index|root).*)?$/ {{dev_server_addr}}/dist_dev/
+/^https?:\/\/tim-qa\.waasonline\.com\/((index|root).*)?$/ js://{w2tip}
+/^https?:\/\/tim-qa\.waasonline\.com\/(.+)\.(js|css|html|woff2|woff|json|png|svg|ttf|ico)(\?.+)?$/ {{dev_server_addr}}/dist_dev/$1.$2$3
+# serve source ts files for debugging
+# chrome needs to load source ts files for debugging, or typescript source map will not work
+/^https?:\/\/tim-qa\.waasonline\.com\/(.+)\.(ts)(\?.+)?$/ {{dev_server_addr}}/$1.$2$3
+
+/^https?:\/\/www\.fortiwebcloudmgt\.com\/((index|root).*)?$/ {{dev_server_addr}}/dist_dev/
+/^https?:\/\/www\.fortiwebcloudmgt\.com\/((index|root).*)?$/ js://{w2tip}
+/^https?:\/\/www\.fortiwebcloudmgt\.com\/(.+)\.(js|css|html|woff2|woff|json|png|svg|ttf|ico)(\?.+)?$/ {{dev_server_addr}}/dist_dev/$1.$2$3
+/^https?:\/\/www\.fortiwebcloudmgt\.com\/(.+)\.(ts)(\?.+)?$/ {{dev_server_addr}}/$1.$2$3
+
+/^https?:\/\/(c8|qa|dev|release)\.waasonline\d?\.com\/((index|root).*)?$/ {{dev_server_addr}}/dist_dev/
+/^https?:\/\/(c8|qa|dev|release)\.waasonline\d?\.com\/((index|root).*)?$/ js://{w2tip}
+/^https?:\/\/(c8|qa|dev|release)\.waasonline\d?\.com\/(.+)\.(js|css|html|woff2|woff|json|png|svg|ttf|ico)(\?.+)?$/ {{dev_server_addr}}/dist_dev/$2.$3$4
+# serve source ts files for debugging
+# chrome needs to load source ts files for debugging, or typescript source map will not work
+/^https?:\/\/(c8|qa|dev|release)\.waasonline\d?\.com\/(.+)\.(ts)?$/ {{dev_server_addr}}/$2.$3$4
+
+/^https?:\/\/www\.fortiweb-cloud(-test|-dev|-qa|-dev-\d+)?\.com\/((index|root).*)?$/ {{dev_server_addr}}/
+/^https?:\/\/www\.fortiweb-cloud(-test|-dev|-qa|-dev-\d+)?\.com\/((index|root).*)?$/ js://{w2tip}
+/^https?:\/\/www\.fortiweb-cloud(-test|-dev|-qa|-dev-\d+)?\.com\/(.+)\.(js|css|html|woff2|woff|json|png|svg|ttf|ico)(\?.+)?$/ {{dev_server_addr}}/$2.$3$4
+/^wss:\/\/www\.fortiweb-cloud-qa\.com:9000(.*)$/ {{dev_server_addr}}$1
+
+# serve source ts files for debugging
+# chrome needs to load source ts files for debugging, or typescript source map will not work
+/^https?:\/\/www\.fortiweb-cloud(-test|-dev|-qa|-dev-\d+)?\.com\/(.+)\.(ts)(\?.+)?$/ {{dev_server_addr}}/$2.$3$4
+
+/^https?:\/\/api\.fortiweb-cloud(-test|-dev|-qa)?(-\d+)?\.com\/(v\d\/.+)$/ {{mock_server_addr}}/$3

@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+param="$1"
+
+setDefaultConf() {
+	node ./bin/resetConf.js  --w2_profile=fwbcloud
+}
+switchNode() {
+	nodemanager=''
+
+	if [[ -f "${HOME}/.nvm/nvm.sh" ]]; then
+		# We need to source nvm.sh to load nvm before we can use it because this script is not run in a login shell
+		export NVM_DIR="$HOME/.nvm"
+		[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+		echo 'nvm is installed.'
+		nodemanager='nvm'
+	fi
+
+	if [ -x "$(command -v n)" ]; then
+		echo 'n is installed.'
+		nodemanager='n'
+	fi
+
+	if ["$nodemanager" == '']; then
+		echo 'Node manager not found. Installing n..'
+		sudo npm i -g n
+		nodemanager='n'
+	fi
+
+	if [ "$nodemanager" == 'n' ]; then
+		ORI_NODE=`node -v`
+		sudo n 16.0.0
+		npm i
+		(
+			sleep 40
+			sudo n "$ORI_NODE"
+		) &
+	elif [ "$nodemanager" == 'nvm' ]; then
+		ORI_NODE=`node -v`
+		nvm use 16.0.0
+		npm i
+		(
+			sleep 40
+			nvm use "$ORI_NODE"
+		) &	
+	fi
+
+	
+}
+
+if [ "$param" == 'env' ]; then
+	echo `xxxx: ${$param}`
+	# switchNode
+elif [ "$param" == 'start' ]; then
+	cd ./midway-devserver/ && npm start
+elif [ "$param" == 'conf' ]; then
+	cd ./midway-devserver/
+	setDefaultConf
+elif [ "$param" == 'dist' ]; then
+	switchNode
+	npm run build && cd ./midway-devserver/ && node index dist
+	
+elif [ "$param" == 'publish' ]; then
+	switchNode
+	cd ./midway-devserver/ && node index dist
+	
+elif [ "$param" == 'docker' ]; then
+	sudo curl https://get.docker.com/ | bash
+
+elif [ "$param" == 'init' ]; then
+	lsof -i:4002 | grep -v COMMAND | cut -c 9-13 | xargs kill -9
+	lsof -i:4003 | grep -v COMMAND | cut -c 9-13 | xargs kill -9
+	rm -rf midway-devserver
+	npm pack @webinfra/midway-devserver
+	tar zxvf $(ls | grep webinfra-midway-devserver-)
+	mv package midway-devserver
+
+	cd midway-devserver
+	setDefaultConf
+	switchNode
+
+	npm i
+	npm start
+fi

@@ -2,7 +2,8 @@ import './vendors';
 import angular from 'angular';
 import './controllers';
 
-angular.module('app', ['ui.router', 'app.controllers']);
+
+angular.module('app', ['ui.router', 'app.controllers', 'mobx-angularjs']);
 
 angular.module('app').config(appConfig).run(appRun);
 
@@ -12,7 +13,7 @@ function appConfig($stateProvider: angular.ui.IStateProvider, $urlServiceProvide
     .state('login', {
       url: '/login',
       templateUrl: 'templates/login/login.html',
-      // controller: 'LoginController',
+      controller: 'LoginController',
       controllerAs: '$ctrl',
     })
     .state('root', {
@@ -22,7 +23,7 @@ function appConfig($stateProvider: angular.ui.IStateProvider, $urlServiceProvide
       controllerAs: '$ctrl',
     });
 
-  $urlServiceProvider.rules.initial('/root');
+  $urlServiceProvider.rules.initial('/login');
   // $urlServiceProvider.rules.otherwise('/root');
 }
 
