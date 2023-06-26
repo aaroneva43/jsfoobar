@@ -1,9 +1,9 @@
 import './vendors';
 import angular from 'angular';
 import './controllers';
+import './services';
 
-
-angular.module('app', ['ui.router', 'app.controllers', 'mobx-angularjs']);
+angular.module('app', ['ui.router', 'app.controllers', 'app.services', 'mobx-angularjs']);
 
 angular.module('app').config(appConfig).run(appRun);
 
@@ -20,6 +20,12 @@ function appConfig($stateProvider: angular.ui.IStateProvider, $urlServiceProvide
       url: '/root',
       templateUrl: 'templates/login/root.html',
       controller: 'RootController',
+      controllerAs: '$ctrl',
+    })
+    .state('root.applications', {
+      url: '/applications',
+      templateUrl: 'templates/applications/applications.html',
+      controller: 'ApplicationsController',
       controllerAs: '$ctrl',
     });
 

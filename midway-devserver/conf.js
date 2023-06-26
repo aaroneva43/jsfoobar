@@ -8,8 +8,8 @@ export default {
   /** assets will be served on 4002 if left empty */
   dev_server_addr: "http://127.0.0.1:9000",
   
-  mock_server_addr: "http://127.0.0.1:3001",
-  api_server_addr: "http://127.0.0.1:3001",
+  // mock_server_addr: "http://127.0.0.1:3001",
+  // api_server_addr: "http://127.0.0.1:3001",
 
   /** server_ip_addr is needed when DNS is not working */
   server_ip_addr: null,

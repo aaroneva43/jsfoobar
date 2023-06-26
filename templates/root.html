@@ -1,0 +1,128 @@
+<div class="root-container">
+  <div ng-if="$ctrl.appearWaitingScreen" class="waiting-screen">
+    <div class="message-layer"><i class="fa fa-spinner fa-spin fa-lg"></i>&nbsp;&nbsp;{{$ctrl.waitingMessage | translate}}</div>
+  </div>
+  <fwc-top-bar></fwc-top-bar>
+  <div class="main-container">
+    <div class="sidebar" data-background-color="white" data-active-color="info">
+      <div class="logo" ng-if="!$ctrl.isMssp">
+        <a href="/" class="simple-text logo-mini">
+          <img src="/styles/img/fortiweb-cloud.svg" class="a_img" />
+        </a>
+        <a href="/" class="simple-text logo-normal"> {{'product_name' | translate}} </a>
+      </div>
+      <div class="logo" ng-if="$ctrl.isMssp && $ctrl.inTenant">
+        <a href="/" class="simple-text logo-mini">
+          <img src="/styles/img/fortiweb-cloud.svg" class="a_img" />
+        </a>
+        <a ng-click="$ctrl.backToMssp()" class="simple-text logo-normal menu-text"> Back To MSSP Portal </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li
+            ng-repeat="item in $ctrl.menuItems"
+            class="{{item.id == $ctrl.currentItem ? 'active' : ''}} {{['global', 'mssp', 'threat_analytics_group'].includes(item.id) ? 'menu-item-separate' : ''}}"
+          >
+            <a ng-if="item.children" data-toggle="collapse" href="{{'#' + item.id}}">
+              <i class="{{item.icon}}">
+                <img ng-if="item.id == 'mssp'" src="/styles/img/fortiweb-cloud.svg" class="a_img" />
+              </i>
+              <p>{{item.label | translate}} <b class="caret"></b></p>
+            </a>
+            <a ng-if="item.sref" ui-sref="{{($ctrl.isTemplate && item.tplsref)? item.tplsref:item.sref}}">
+              <i class="{{item.icon}}">
+                <img ng-if="item.id == 'mssp'" src="/styles/img/fortiweb-cloud.svg" class="a_img" />
+              </i>
+              <p>{{item.label | translate}} &nbsp;<span ng-if="item.id == 'threat_analytics'" class="beta">{{'New' | translate}}</span></p>
+            </a>
+            <!-- l2 -->
+            <div class="collapse" id="{{item.id}}">
+              <ul class="nav" ng-if="item.children">
+                <li ng-repeat="child in item.children" class="{{child.id == $ctrl.currentChild ? 'active' : ''}}">
+                  <a ng-if="!child.children" ui-sref="{{($ctrl.isTemplate && child.tplsref)? child.tplsref:child.sref}}">
+                    <span class="sidebar-mini">{{child.mini}}</span>
+                    <span class="sidebar-normal">
+                      {{child.label | translate}} &nbsp;
+                      <span ng-if="child.id == 'waiting_room'" class="beta">{{'Beta' | translate}}</span>
+                    </span>
+                  </a>
+                  <a ng-if="child.children" data-toggle="collapse" href="{{'#' + child.id}}">
+                    <span ng-if="child.mini" class="sidebar-mini" style="line-height: 30px">{{child.mini}}</span>
+                    <p>{{child.label | translate}} <b class="caret"></b></p>
+                  </a>
+                  <!-- l3 -->
+                  <div class="collapse" id="{{child.id}}">
+                    <ul class="nav" ng-if="child.children">
+                      <li ng-repeat="child in child.children" class="{{child.id == $ctrl.currentChild ? 'active' : ''}}">
+                        <a ng-if="!child.children" ui-sref="{{($ctrl.isTemplate && child.tplsref)? child.tplsref:child.sref}}">
+                          <span class="sidebar-mini" style="text-transform: none">{{child.mini}}</span>
+                          <span class="sidebar-normal" style="margin-left: 60px">{{child.label | translate}}</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li ng-if="!$ctrl.minimize && !$ctrl.isNoPermission">
+            <a ng-click="$ctrl.addModule()">
+              <i class="ti-plus"></i>
+              <p>Add Modules</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <nav class="navbar navbar-default second-top-bar">
+        <div class="container-fluid">
+          <div class="navbar-minimize">
+            <button id="minimizeSidebar" class="btn btn-fill nav-btn" ng-click="$ctrl.toggleMinimize()">
+              <i ng-if="$ctrl.minimize" class="fa fa-angle-right action-cell"></i>
+              <i ng-if="!$ctrl.minimize" class="fa fa-angle-left action-cell"></i>
+            </button>
+          </div>
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-click="$ctrl.toggleNavbar()">
+              <span class="sr-only">{{'Toggle navigation' | translate}}</span>
+              <span class="icon-bar bar1"></span>
+              <span class="icon-bar bar2"></span>
+              <span class="icon-bar bar3"></span>
+            </button>
+            <a class="navbar-brand" style="width: 100%; padding-right: 280px; cursor: default">
+              <div class="word-wrap-b" title="{{$ctrl.rootTitleTooltip}}">{{$ctrl.rootTitle}}</div>
+            </a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul ng-if="$ctrl.minimize && $ctrl.showContractsRefresh" class="nav navbar-nav navbar-right">
+              <li>
+                <a class="btn" ng-click="$ctrl.contractsRefresh()"> <i class="fa fa-refresh"></i> REFRESH</a>
+              </li>
+            </ul>
+            <div ng-if="!$ctrl.minimize && $ctrl.showBlockMode" class="navbar-switch-div">
+              <span class="navbar-block-mode">{{'Block Mode' | translate}}</span>
+              <input bs-switch ng-model="$ctrl.currentSwitchStatus" type="checkbox" ng-change="$ctrl.switchChange()" switch-active="{{!$ctrl.readonly()}}" />
+              <!--$ctrl.readonly() specail handler-->
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="content">
+        <ui-view></ui-view>
+      </div>
+    </div>
+  </div>
+  <div class="main-footer">
+    <span ng-if="$ctrl.sn">{{'Serial Number:' | translate}} {{$ctrl.sn}} |</span>
+    {{'Version' | translate}} {{$ctrl.version}}
+    <span ng-if="$ctrl.build!='n/a' && $ctrl.build!=''"> {{$ctrl.build}}-{{$ctrl.branch}} {{$ctrl.buildtime | date:'yyyy-MM-dd HH:mm:ss'}} </span> |
+    <a href="" ng-click="$ctrl.openPrivacyPolicy()">{{'Privacy Policy' | translate}}</a> | <a href="" ng-click="$ctrl.openTermsOfService()">{{'Terms of Service' | translate}}</a> |
+    <span ng-if="$ctrl.showSubscribe">
+      {{'Subscribe for Free!' | translate}} |
+      <a href="" ng-click="$ctrl.deployFromAws()"><b>{{'Subscribe on AWS' | translate}}</b></a> | <a href="" ng-click="$ctrl.deployFromAzure()"><b>{{'Subscribe on Azure' | translate}}</b></a> |
+      <a href="" ng-click="$ctrl.deployFromGoogle()"><b>{{'Subscribe on Google Cloud' | translate}}</b></a> |
+    </span>
+    {{'company_copyright_1' | translate}} {{$ctrl.currentYear || '2021'}} {{'company_copyright_2' | translate}}
+  </div>
+</div>
