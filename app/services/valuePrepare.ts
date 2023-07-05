@@ -1,13 +1,16 @@
 import services from './module';
 import _ from 'lodash';
 import angular from 'angular';
+import dayjs from 'dayjs';
+import { Address4 } from 'ip-address';
+
 import { FWC_MENU } from '../utils/biz/meta/menu';
 import { MAP_REGIONS, COUNTRY_CODE_MAP } from '../utils/biz/meta/geo';
 import { SERVER_TYPE, URL_TYPES, USER_PERMISSION, SYSLOG_FORMAT_TYPE } from '../utils/biz/meta';
 import { CLOUD_PLATFORMS } from '../utils/biz/meta/cloudPlatforms';
 import { changeUtcStrToLocalStr_moment } from '../utils/datetime';
 import { DATE_FORMAT_A1 } from '../utils/datetime';
-import dayjs from 'dayjs';
+
 import { byte2KMG } from '../utils/misc';
 
 services.factory('valuePrepare', valuePrepare);
@@ -981,8 +984,7 @@ function valuePrepare(translate) {
    *
    */
   function checkIPorIPRangeArray(allIpsValues) {
-    var Address4 = window.Address4,
-      flag = false,
+    var flag = false,
       alertMsg = '',
       ip_value = '';
 
@@ -1000,7 +1002,7 @@ function valuePrepare(translate) {
           val2 = arr[1];
           var address_ip_4_1 = new Address4(val1),
             address_ip_4_2 = new Address4(val2);
-          if (address_ip_4_1.isValid() && address_ip_4_2.isValid()) {
+          if (Address4.isValid(val1) && Address4.isValid(val2)) {
             if (hasDuplicates(allIpsValues)) {
               flag = false;
               alertMsg = translate('tip_duplicate');
@@ -1014,7 +1016,7 @@ function valuePrepare(translate) {
         }
       } else {
         var address_ip_4 = new Address4(val);
-        if (address_ip_4.isValid()) {
+        if (Address4.isValid(val)) {
           if (hasDuplicates(allIpsValues)) {
             flag = false;
             alertMsg = translate('tip_duplicate');

@@ -1,0 +1,57 @@
+{
+	"c8.waasonline.com": {
+		"user_pool": "us-east-1_1bumqLCyB",
+		"app_client": "osq7e568q2dfqt3atnpn2lu7g",
+		"user_origin": "Cognito:FCW_MSSP_C8:us-east-1_1bumqLCyB"
+	},
+	"t-systems.waasonline.com": {
+		"user_pool": "us-east-1_7SeXNRb7x",
+		"app_client": "ikkousd0mri8oeb5h5316df3c",
+		"user_origin": "Cognito:FCW_MSSP_T-SYSTEMS:us-east-1_7SeXNRb7x"
+	},
+	"emea1.waasonline.com": {
+		"user_pool": "us-east-1_7RIrcWF8l",
+		"app_client": "2eqpi8p8215p8oguqqo02vnfc2",
+		"user_origin": "Cognito:FCW_MSSP_EMEA1:us-east-1_7RIrcWF8l"
+	},
+	"poc.waasonline.com": {
+		"user_pool": "us-east-1_xP2ypv7oj",
+		"app_client": "3ar8afmgvc1evgti129obvkhgp",
+		"user_origin": "Cognito:FCW_MSSP_POC:us-east-1_xP2ypv7oj"
+	},
+	"dev.waasonline.com": {
+		"user_pool": "ap-southeast-1_CsUB7I95E",
+		"app_client": "7s2htmoocknl6udhnafotadg0s",
+		"user_origin": "Cognito:FCW_MSSP_DEV:ap-southeast-1_CsUB7I95E"
+	},
+	"qa.waasonline.com": {
+		"user_pool": "ap-northeast-2_cMjTRN06h",
+		"app_client": "47me0isemduo847uh5ge8rv6jn",
+		"user_origin": "Cognito:FCW_MSSP_QA:ap-northeast-2_cMjTRN06h"         
+	},
+	"tim.waasonline.com": {
+		"user_pool": "eu-central-1_2In0SNo9z",
+		"app_client": "6scfhqe0t8fhvtekg8oljm5cm1",
+		"user_origin": "Cognito:FCW_MSSP_TIM:eu-central-1_2In0SNo9z"         
+	},
+	"release.waasonline.com": {
+		"user_pool": "ap-northeast-2_yGNpJp8jE",
+		"app_client": "3hul96kseqdrn1d6jf49r381an",
+		"user_origin": "Cognito:FCW_MSSP_RELEASE:ap-northeast-2_yGNpJp8jE"         
+	},
+	"jisc.waasonline.com": {
+		"user_pool": "eu-central-1_LAZCFDxE5",
+		"app_client": "596oe048ufsttoqbjekiv1fqee",
+		"user_origin": "Cognito:FCW_MSSP_JISC:eu-central-1_LAZCFDxE5"         
+	},
+	"c8.waasonline2.com": {
+		"user_pool": "us-east-1_H84hIOh5S",
+		"app_client": "3droquj6smrogc1jg23jgji08i",
+		"user_origin": "Cognito:FCW_MSSP_C8:us-east-1_H84hIOh5S"         
+	},
+	"release.waasonline2.com": {
+		"user_pool": "us-east-1_B4afbjPvv",
+		"app_client": "1tbmugnm930hpj25lep6m9a5r4",
+		"user_origin": "Cognito:FCW_MSSP_RELEASE:us-east-1_B4afbjPvv"         
+	}
+}

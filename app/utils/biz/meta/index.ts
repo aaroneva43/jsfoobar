@@ -1,5 +1,7 @@
 import type { ValuesOf } from '../../types';
-import { DOMAINURI_OEM_MAP, DOMAIN_URI_MAP } from './domain';
+import { DOMAINURI_2_OEM, DOMAIN_2_URI } from './domain';
+import cognito_pools from '../../../../cognito-pools.json';
+
 export const ONLINE_HELP_CONTRACTS_URL = 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/513177/contracts';
 
 export const DEMO_USER_EMAIL = 'demo@fortiweb.com';
@@ -18,7 +20,7 @@ export type UserPermission = ValuesOf<typeof USER_PERMISSION>;
 
 export const REGISTER_URL = {
   default: 'https://support-dev.corp.fortinet.com/Login/CreateAccount.aspx',
-  [DOMAIN_URI_MAP['prod']]: 'https://support.fortinet.com/Login/CreateAccount.aspx',
+  [DOMAIN_2_URI['prod']]: 'https://support.fortinet.com/Login/CreateAccount.aspx',
 } as const;
 
 // page size set for paginator
@@ -201,99 +203,82 @@ export const DOMAIN_NAME_VIOLATIONS = {
   DOMAIN_INCLUDE_OTHERS: 'DOMAIN_INCLUDE_OTHERS',
 } as const;
 
-export const LINKS = (() => {
-  const oem = DOMAINURI_OEM_MAP[window.location.hostname];
-  let links = {};
+const OEM_2_LINK = {
+  c8: {
+    COMPANY_URL: 'https://www.continent8.com',
+    PRIVACY_POLICY_URL: 'https://www.continent8.com/terms-conditions/',
+    TERM_SERVICE_URL: 'https://www.continent8.com/terms-conditions/',
+    GDPR_URL: false,
+    CONTACT_US_URL: 'https://www.continent8.com/contact-us/',
+    ONLINE_HELP_URL: '/doc/c8/online_help/index.htm',
+    API_DOC_URL: '/doc/c8/apidoc/api.html',
+    FAQ_URL: 'https://c8.waasonline.com/root/applications',
+  },
+  tim: {
+    COMPANY_URL: 'https://www.tim.it/',
+    PRIVACY_POLICY_URL: 'http://www.telecomitalia.com/tit/it/footer/Privacy.html',
+    TERM_SERVICE_URL: 'https://www.timbusiness.it/sites/nuvola.impresasemplice.it/files/documenti/terms-of-use-nuvola-it-host-protection%20(4).pdf',
+    GDPR_URL: 'https://www.tim.it/assistenza/per-i-consumatori/info-consumatori-fisso/news/novita-sulla-protezione-dati-personali-gdpr',
+    CONTACT_US_URL: 'https://www.gruppotim.it/en/footer/contacts.html',
+    ONLINE_HELP_URL: '/doc/tim/online_help/index.htm',
+    API_DOC_URL: '/doc/tim/apidoc/api.html',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+  },
+  release_qa_new: {
+    COMPANY_URL: 'https://www.tim.it/',
+    PRIVACY_POLICY_URL: 'http://www.telecomitalia.com/tit/it/footer/Privacy.html',
+    TERM_SERVICE_URL: 'https://www.timbusiness.it/sites/nuvola.impresasemplice.it/files/documenti/terms-of-use-nuvola-it-host-protection%20(4).pdf',
+    GDPR_URL: 'https://www.tim.it/assistenza/per-i-consumatori/info-consumatori-fisso/news/novita-sulla-protezione-dati-personali-gdpr',
+    CONTACT_US_URL: 'https://www.gruppotim.it/en/footer/contacts.html',
+    ONLINE_HELP_URL: '/doc/tim/online_help/index.htm',
+    API_DOC_URL: '/doc/tim/apidoc/api.html',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+  },
+  jisc: {
+    COMPANY_URL: 'https://www.jisc.ac.uk',
+    PRIVACY_POLICY_URL: 'https://www.jisc.ac.uk/website/privacy-notice',
+    TERM_SERVICE_URL: 'https://assets.digitalmarketplace.service.gov.uk/g-cloud-12/documents/706762/252596149347821-terms-and-conditions-2020-07-14-0931.pdf',
+    GDPR_URL: 'https://www.jisc.ac.uk/gdpr/gdpr-and-our-service-terms',
+    CONTACT_US_URL: 'mailto:cloud@jisc.ac.uk',
+    ONLINE_HELP_URL: 'https://jisc.waasonline.com/doc/jisc/index.htm',
+    API_DOC_URL: 'https://apidoc.jisc.waasonline.com/',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+  },
+  't-systems': {
+    COMPANY_URL: 'https://www.t-systems.com',
+    PRIVACY_POLICY_URL: 'https://www.t-systems.com',
+    TERM_SERVICE_URL: 'https://www.t-systems.com',
+    GDPR_URL: false,
+    CONTACT_US_URL: 'https://offers.t-systemsus.com/home-page-contact-me',
+    ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
+    API_DOC_URL: '/apidoc/api.html',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+  },
+  poc_product: {
+    COMPANY_URL: 'https://www.fortinet.com',
+    PRIVACY_POLICY_URL: 'https://www.fortinet.com/corporate/about-us/privacy.html',
+    TERM_SERVICE_URL: 'https://www.fortinet.com/corporate/about-us/legal.html',
+    GDPR_URL: 'https://www.fortinet.com/corporate/about-us/gdpr.html',
+    CONTACT_US_URL: 'https://www.fortinet.com/corporate/about-us/contact-us.html',
+    ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
+    API_DOC_URL: '/apidoc/api.html',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+  },
+  default: {
+    COMPANY_URL: 'https://www.fortinet.com',
+    PRIVACY_POLICY_URL: 'https://www.fortinet.com/corporate/about-us/privacy.html',
+    TERM_SERVICE_URL: 'https://www.fortinet.com/corporate/about-us/legal.html',
+    GDPR_URL: 'https://www.fortinet.com/corporate/about-us/gdpr.html',
+    CONTACT_US_URL: 'https://www.fortinet.com/corporate/about-us/contact-us.html',
+    ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
+    API_DOC_URL: '/apidoc/api.html',
+    FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
+    CONTACTSUPPORT_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/796808/contacting-customer-service',
+  },
+};
 
-  switch (oem) {
-    case 'c8':
-      links = {
-        COMPANY_URL: 'https://www.continent8.com',
-        PRIVACY_POLICY_URL: 'https://www.continent8.com/terms-conditions/',
-        TERM_SERVICE_URL: 'https://www.continent8.com/terms-conditions/',
-        GDPR_URL: false,
-        CONTACT_US_URL: 'https://www.continent8.com/contact-us/',
-        ONLINE_HELP_URL: '/doc/c8/online_help/index.htm',
-        API_DOC_URL: '/doc/c8/apidoc/api.html',
-        FAQ_URL: 'https://c8.waasonline.com/root/applications',
-      };
-      break;
+export const LINKS = OEM_2_LINK[DOMAINURI_2_OEM[window.location.hostname]] || OEM_2_LINK.default;
 
-    case 'tim':
-      links = {
-        COMPANY_URL: 'https://www.tim.it/',
-        PRIVACY_POLICY_URL: 'http://www.telecomitalia.com/tit/it/footer/Privacy.html',
-        TERM_SERVICE_URL: 'https://www.timbusiness.it/sites/nuvola.impresasemplice.it/files/documenti/terms-of-use-nuvola-it-host-protection%20(4).pdf',
-        GDPR_URL: 'https://www.tim.it/assistenza/per-i-consumatori/info-consumatori-fisso/news/novita-sulla-protezione-dati-personali-gdpr',
-        CONTACT_US_URL: 'https://www.gruppotim.it/en/footer/contacts.html',
-        ONLINE_HELP_URL: '/doc/tim/online_help/index.htm',
-        API_DOC_URL: '/doc/tim/apidoc/api.html',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-      };
-      break;
+export const USER_POOL: false | { user_pool: string; app_client: string; user_origin: string } = (cognito_pools || {})[window.location.hostname] || false;
 
-    case 'release_qa_new':
-      links = {
-        COMPANY_URL: 'https://www.tim.it/',
-        PRIVACY_POLICY_URL: 'http://www.telecomitalia.com/tit/it/footer/Privacy.html',
-        TERM_SERVICE_URL: 'https://www.timbusiness.it/sites/nuvola.impresasemplice.it/files/documenti/terms-of-use-nuvola-it-host-protection%20(4).pdf',
-        GDPR_URL: 'https://www.tim.it/assistenza/per-i-consumatori/info-consumatori-fisso/news/novita-sulla-protezione-dati-personali-gdpr',
-        CONTACT_US_URL: 'https://www.gruppotim.it/en/footer/contacts.html',
-        ONLINE_HELP_URL: '/doc/tim/online_help/index.htm',
-        API_DOC_URL: '/doc/tim/apidoc/api.html',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-      };
-      break;
-
-    case 'jisc':
-      links = {
-        COMPANY_URL: 'https://www.jisc.ac.uk',
-        PRIVACY_POLICY_URL: 'https://www.jisc.ac.uk/website/privacy-notice',
-        TERM_SERVICE_URL: 'https://assets.digitalmarketplace.service.gov.uk/g-cloud-12/documents/706762/252596149347821-terms-and-conditions-2020-07-14-0931.pdf',
-        GDPR_URL: 'https://www.jisc.ac.uk/gdpr/gdpr-and-our-service-terms',
-        CONTACT_US_URL: 'mailto:cloud@jisc.ac.uk',
-        ONLINE_HELP_URL: 'https://jisc.waasonline.com/doc/jisc/index.htm',
-        API_DOC_URL: 'https://apidoc.jisc.waasonline.com/',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-      };
-
-    case 't-systems':
-      links = {
-        COMPANY_URL: 'https://www.t-systems.com',
-        PRIVACY_POLICY_URL: 'https://www.t-systems.com',
-        TERM_SERVICE_URL: 'https://www.t-systems.com',
-        GDPR_URL: false,
-        CONTACT_US_URL: 'https://offers.t-systemsus.com/home-page-contact-me',
-        ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
-        API_DOC_URL: '/apidoc/api.html',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-      };
-      break;
-
-    case 'poc_product':
-      links = {
-        COMPANY_URL: 'https://www.fortinet.com',
-        PRIVACY_POLICY_URL: 'https://www.fortinet.com/corporate/about-us/privacy.html',
-        TERM_SERVICE_URL: 'https://www.fortinet.com/corporate/about-us/legal.html',
-        GDPR_URL: 'https://www.fortinet.com/corporate/about-us/gdpr.html',
-        CONTACT_US_URL: 'https://www.fortinet.com/corporate/about-us/contact-us.html',
-        ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
-        API_DOC_URL: '/apidoc/api.html',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-      };
-
-    default:
-      links = {
-        COMPANY_URL: 'https://www.fortinet.com',
-        PRIVACY_POLICY_URL: 'https://www.fortinet.com/corporate/about-us/privacy.html',
-        TERM_SERVICE_URL: 'https://www.fortinet.com/corporate/about-us/legal.html',
-        GDPR_URL: 'https://www.fortinet.com/corporate/about-us/gdpr.html',
-        CONTACT_US_URL: 'https://www.fortinet.com/corporate/about-us/contact-us.html',
-        ONLINE_HELP_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/',
-        API_DOC_URL: '/apidoc/api.html',
-        FAQ_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/655461/faqs',
-        CONTACTSUPPORT_URL: 'https://docs.fortinet.com/document/fortiweb-cloud/latest/user-guide/796808/contacting-customer-service',
-      };
-      break;
-  }
-})();
+export const OEM = DOMAINURI_2_OEM[window.location.hostname];

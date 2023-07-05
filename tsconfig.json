@@ -1,16 +1,10 @@
 {
   "compilerOptions": {
     "rootDir": ".",
-    "target": "es5",
-    "lib": [
-      "dom",
-      "es6"
-    ],
+    "target": "es6",
+    "lib": ["dom", "es6"],
     "module": "es2020",
-    "typeRoots": [
-      "./node_modules/@types",
-      "./typings"
-    ],
+    "typeRoots": ["./node_modules/@types", "./typings"],
     "allowJs": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -19,10 +13,8 @@
     "skipLibCheck": true,
     "strictNullChecks": false,
     "resolveJsonModule": true,
-    "outDir": "dist_dev"
+    "outDir": "dist_dev",
+    "jsx": "react"
   },
-  "include": [
-    "app/**/*",
-    "typings/**/*"
-  ]
+  "include": ["app/**/*", "typings/**/*"]
 }

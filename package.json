@@ -8,13 +8,21 @@
 		"@uirouter/angularjs": "^1.0.20",
 		"@uirouter/core": "^6.0.10",
 		"angular": "^1.7.5",
+		"angular-translate": "^2.18.1",
 		"dayjs": "^1.11.8",
+		"ip-address": "^8.1.0",
 		"jquery": "^3.3.1",
+		"js-cookie": "^3.0.5",
 		"lodash-es": "^4.17.21",
 		"mobx": "^6.9.0",
 		"mobx-angularjs": "^1.6.1",
+		"mobx-react": "^7.6.0",
 		"moment-timezone": "^0.5.43",
-		"path-browserify": "^1.0.1"
+		"path-browserify": "^1.0.1",
+		"prop-types": "^15.8.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react18-react2angular": "^5.0.3"
 	},
 	"devDependencies": {
 		"@types/angular": "^1.8.4",

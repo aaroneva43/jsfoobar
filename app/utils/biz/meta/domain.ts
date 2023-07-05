@@ -24,7 +24,7 @@ export const domains = {
   release_qa_new: { uri: 'release.waasonline2.com', api: 'https://api.waasonline2.com/v2' }, // c8 qa private site
 } as const;
 
-export const OEM_DOMAIN_MAP = {
+export const OEM_2_DOMAIN = {
   c8: ['c8', 'dev_private', 'qa_private', 'c8_qa_new', 'poc_private'],
   tim: ['tim', 'tim_qa'],
   release_qa_new: ['release_qa_new'],
@@ -33,9 +33,9 @@ export const OEM_DOMAIN_MAP = {
   poc_product: ['poc_product', 'emea1'],
 } as const;
 
-export const DOMAIN_URI_MAP = Object.keys(domains).reduce((acc, name) => Object.assign(acc, { name: domains[name].uri }), {});
+export const DOMAIN_2_URI = Object.keys(domains).reduce((acc, name) => Object.assign(acc, { [name]: domains[name].uri }), {});
 
-export const DOMAIN_API_MAP = Object.keys(domains).reduce(
+export const DOMAIN_2_API = Object.keys(domains).reduce(
   (acc, name) => {
     const domain = domains[name];
     return Object.assign(acc, { [domain.uri]: domain.api });
@@ -43,13 +43,13 @@ export const DOMAIN_API_MAP = Object.keys(domains).reduce(
   { default: 'https://api.fortiwebcloudmgt.com/v2' },
 );
 
-export const DOMAINURI_OEM_MAP = Object.keys(DOMAIN_URI_MAP).reduce((acc, name) => {
-  const oem = Object.keys(OEM_DOMAIN_MAP).find((oem) => OEM_DOMAIN_MAP[oem].includes(name)) || false;
-  return Object.assign(acc, { [DOMAIN_URI_MAP[name]]: oem });
+export const DOMAINURI_2_OEM = Object.keys(DOMAIN_2_URI).reduce((acc, name) => {
+  const oem = Object.keys(OEM_2_DOMAIN).find((oem) => OEM_2_DOMAIN[oem].includes(name)) || false;
+  return Object.assign(acc, { [DOMAIN_2_URI[name]]: oem });
 }, {});
 
 export const getApiLocation = () => {
-  return DOMAIN_API_MAP[window.location.hostname] || DOMAIN_API_MAP['default'];
+  return DOMAIN_2_API[window.location.hostname] || DOMAIN_2_API['default'];
 };
 
-
+export const OEM = DOMAINURI_2_OEM[window.location.hostname] || false;

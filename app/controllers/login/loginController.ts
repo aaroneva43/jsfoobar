@@ -50,34 +50,50 @@ function LoginController(dataService, $state, $window) {
       .post('/saml/demo_login', {})
       .then(
         function (response) {
-          var data = response;
+          const {
+            sn,
+            trial_info,
+            permission: user_permission,
+            version,
+            user_data: accountData,
+            authentication,
+            account_id,
+            current_license_type,
+            user_role,
+            mssp_model,
+            platform,
+            is_sub_user,
+            mssp_pool_signup,
+          } = response || {};
 
           // clear data of last log in
           storage.session.rm(['tenant_id', 'tenant_name', 'fortinet_expired_notification']);
-          storage.session.set('accountData', data.user_data);
+          storage.session.set({
+            accountData,
+          });
 
           //if admin has contract, GUI show tip
           storage.session.rm('tip_admin_has_contract');
 
           storage.local.set({
-            'sn': data.sn,
-            'trial_info': data.trial_info,
-            'user_permission': data.permission,
-            'version': data.version,
+            sn,
+            trial_info,
+            user_permission,
+            version,
           });
 
           storage.session.set({
-            'authentication': data.authentication,
-            'account_id': data.account_id,
-            'user_email': 'demo@fortinet.com',
-            'current_license_type': data.current_license_type,
-            'user_role': data.user_role,
-            'mssp_model': data.mssp_model,
-            'platform': data.platform,
-            'is_sub_user': data.is_sub_user,
-            'mssp_pool_signup': data.mssp_pool_signup,
+            authentication,
+            account_id,
+            user_email: 'demo@fortinet.com',
+            current_license_type,
+            user_role,
+            mssp_model,
+            platform,
+            is_sub_user,
+            mssp_pool_signup,
           });
-          
+
           $window.open($state.href('root.applications'), '_blank');
         },
         function () {

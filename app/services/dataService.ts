@@ -178,7 +178,6 @@ function dataService($state, $q, $http): IDataService {
       data: data || {},
     });
   }
-
   // function notifyInconsistentAccount() {
   //   var dlg = dialogs.create(
   //     'templates/directives/notify_inconsistent_account.html',

@@ -1,3 +1,3 @@
 import './login/loginController';
-import './login/rootController';
+import './RootController';
 import './applications/ApplicationsController';

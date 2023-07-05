@@ -30,7 +30,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.ts$/i,
+        test: /\.ts|jsx$/i,
         loader: 'ts-loader',
         exclude: '/node_modules/',
       },

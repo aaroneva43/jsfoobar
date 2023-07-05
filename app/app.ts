@@ -2,8 +2,10 @@ import './vendors';
 import angular from 'angular';
 import './controllers';
 import './services';
+import './components';
+import eventbus from './utils/eventbus';
 
-angular.module('app', ['ui.router', 'app.controllers', 'app.services', 'mobx-angularjs']);
+angular.module('app', ['ui.router', 'app.controllers', 'app.services', 'app.components', 'mobx-angularjs']);
 
 angular.module('app').config(appConfig).run(appRun);
 
@@ -12,21 +14,17 @@ function appConfig($stateProvider: angular.ui.IStateProvider, $urlServiceProvide
   $stateProvider
     .state('login', {
       url: '/login',
-      templateUrl: 'templates/login/login.html',
-      controller: 'LoginController',
-      controllerAs: '$ctrl',
+      component: 'login',
     })
     .state('root', {
       url: '/root',
-      templateUrl: 'templates/login/root.html',
+      templateUrl: 'templates/root.html',
       controller: 'RootController',
-      controllerAs: '$ctrl',
     })
     .state('root.applications', {
       url: '/applications',
       templateUrl: 'templates/applications/applications.html',
       controller: 'ApplicationsController',
-      controllerAs: '$ctrl',
     });
 
   $urlServiceProvider.rules.initial('/login');
@@ -34,4 +32,8 @@ function appConfig($stateProvider: angular.ui.IStateProvider, $urlServiceProvide
 }
 
 appRun.$inject = ['$transitions', '$rootScope', '$state'];
-function appRun($transitions, $rootScope, $state) {}
+function appRun($transitions, $rootScope, $state) {
+  $transitions.onSuccess({}, function (transition) {
+    eventbus.fire('state-changed', $rootScope, transition);
+  });
+}

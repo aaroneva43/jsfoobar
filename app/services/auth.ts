@@ -1,15 +1,14 @@
 import _ from 'lodash';
+import cookie from 'js-cookie';
 import services from './module';
 import { MSSP_MODEL, PERM_MODULES, PermModule, STATE_TO_MODULE, USER_PERMISSION, USER_ROLE, type UserPermission } from '../utils/biz/meta';
-import { OEM } from '../constants/siteRelated';
-import fwcStorage from './storage';
-import { NEW_FEATURE_TOUR } from '../constants/newFeatureTour';
-import { CLOUD_PLATFORMS } from '../constants/cloudPlatform';
-import apiConfigService from './apiConfig';
+import { OEM, getApiLocation } from '../utils/biz/meta/domain';
+import { CLOUD_PLATFORMS } from '../utils/biz/meta/cloudPlatforms';
 import { storage } from '../utils/storage';
+services.factory('auth', auth);
 
 export function getUserPermission(url: string): UserPermission {
-  var userPermission = fwcStorage.get('user_permission');
+  var userPermission = storage.local.get('user_permission');
   var permission;
 
   switch (userPermission[url]) {
@@ -31,7 +30,7 @@ export function getUserPermission(url: string): UserPermission {
 }
 
 export function currentUserRole(): string {
-  return sessionStorage.getItem('user_role');
+  return storage.session.get('user_role');
 }
 
 export function isTenant(): boolean {
@@ -40,12 +39,12 @@ export function isTenant(): boolean {
 
 // Current user is a mssp but he/she view the portal in a tenant view
 export function isMsspAsTenant(): boolean {
-  return currentUserRole() === USER_ROLE.MSSP && sessionStorage.getItem('tenant_id') !== null;
+  return currentUserRole() === USER_ROLE.MSSP && storage.session.get('tenant_id') !== null;
 }
 
 export function isTenantUser(url: string): string {
-  if (sessionStorage.getItem('tenant_id')) {
-    var tenant_id = encodeURIComponent(sessionStorage.getItem('tenant_id'));
+  if (storage.session.get('tenant_id')) {
+    var tenant_id = encodeURIComponent(storage.session.get('tenant_id'));
     if (url.includes('?')) {
       url = `${url + (url.endsWith('&') ? '' : '&')}tenant=${tenant_id}`;
     } else {
@@ -55,14 +54,13 @@ export function isTenantUser(url: string): string {
   return url;
 }
 
-services.factory('auth', auth);
-
-auth.$inject = ['$rootScope', '$cookies', '$http', 'waitingScreen', '$state', '$q'];
-function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
+auth.$inject = ['$rootScope', '$http', '$state', '$q', 'dataService'];
+function auth($rootScope, $http, $state, $q, dataService) {
   return {
     getToken: getToken,
     isReadonly: isReadonly,
     logOut: logOut,
+    demoLogin: demoLogin,
     setCookie: setCookie,
     removeCookie: removeCookie,
     isMSSPLicensed: isMSSPLicensed,
@@ -71,14 +69,13 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
     clearAuth: clearAuth,
     getUserPermission: getUserPermission,
     isMenuVisible: isMenuVisible,
-    getNewFeatureTourTemplates: getNewFeatureTourTemplates,
   };
 
   function getToken() {
-    var token = sessionStorage.getItem('authentication');
+    var token = storage.session.get('authentication');
     if (token) {
       // already login, check whether account id is inconsistent
-      if ($rootScope.account_id && $rootScope.account_id !== sessionStorage.getItem('account_id')) {
+      if ($rootScope.account_id && $rootScope.account_id !== storage.session.get('account_id')) {
         // inconsistent account_id, only used in front-end
         // should not be sent by API request
         return 'INCONSISTENT_ACCOUNT';
@@ -89,7 +86,7 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
 
   function isReadonly() {
     var result = false;
-    var userPermission = fwcStorage.get('user_permission');
+    var userPermission = storage.local.get('user_permission');
 
     if ($state.includes('root.application')) {
       if ($rootScope['application'] && 'can_update' in $rootScope['application']) {
@@ -146,53 +143,42 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
   }
 
   function logOut() {
-    var apiLocation = apiConfigService.getApiLocation();
-    var url = [apiLocation, '/main/logout'].join('');
+    var url = [getApiLocation(), '/main/logout'].join('');
     var token = getToken();
 
     if (token === 'INCONSISTENT_ACCOUNT') {
       return new $q.reject();
     }
-    waitingScreen.appear();
-    return $http({
-      method: 'POST',
-      headers: {
-        Authorization: token,
-      },
-      url: url,
-      data: {},
-    }).finally(function () {
-      waitingScreen.disappear();
-      clearAuth();
-    });
+    return dataService
+      .post({
+        headers: {
+          Authorization: token,
+        },
+        url: url,
+        data: {},
+      })
+      .finally(function () {
+        clearAuth();
+      });
   }
 
   function clearAuth() {
-    var domain = window.location.hostname.replace('www.', '.');
-    sessionStorage.removeItem('authentication');
-    sessionStorage.removeItem('user_email');
-    sessionStorage.removeItem('is_sub_user');
-    sessionStorage.removeItem('current_license_type');
-    sessionStorage.removeItem('user_role');
-    sessionStorage.removeItem('tenant_id');
-    sessionStorage.removeItem('tenant_name');
-    sessionStorage.removeItem('account_id');
-    sessionStorage.removeItem('platform');
-    sessionStorage.removeItem('mssp_model');
-    sessionStorage.removeItem('mssp_pool_signup');
-    sessionStorage.removeItem('on_premise');
+    storage.session.rm([
+      'authentication',
+      'user_email',
+      'is_sub_user',
+      'current_license_type',
+      'user_role',
+      'tenant_id',
+      'tenant_name',
+      'account_id',
+      'platform',
+      'mssp_model',
+      'mssp_pool_signup',
+      'on_premise',
+    ]);
 
-    fwcStorage.remove('accountData');
-    fwcStorage.remove('user_error');
-    fwcStorage.remove('sn');
-    fwcStorage.remove('trial_info');
-    fwcStorage.remove('user_permission');
-    fwcStorage.remove('tenant_permission');
-    fwcStorage.remove('tip_admin_has_contract');
-    fwcStorage.remove('access_token');
-    fwcStorage.remove('build');
-    fwcStorage.remove('branch');
-    fwcStorage.remove('buildtime');
+    storage.local.rm(['accountData', 'user_error', 'sn', 'trial_info', 'user_permission', 'tenant_permission', 'tip_admin_has_contract', 'access_token', 'build', 'branch', 'buildtime']);
 
     $rootScope.account_id = null;
   }
@@ -201,20 +187,18 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
     var domain = window.location.hostname;
     // if(domain.indexOf('www') >= 0)
     // 	domain = domain.replace('www.', '.');
-    $cookies.put(key, value, { domain: domain });
+    cookie.put(key, value, { domain: domain });
   }
 
   function removeCookie(key) {
     var domain = window.location.hostname;
     // if(domain.indexOf('www') >= 0)
     // 	domain = domain.replace('www.', '.');
-    $cookies.remove(key, { domain: domain });
+    cookie.remove(key, { domain: domain });
   }
 
   function isMSSPLicensed() {
-    var tenantId = sessionStorage.getItem('tenant_id');
-    var userRole = sessionStorage.getItem('user_role');
-    var msspModel = sessionStorage.getItem('mssp_model');
+    const { tenantId, userRole, msspModel } = storage.session.get(['tenant_id', 'user_role', 'mssp_model']);
 
     if (tenantId) {
       return false;
@@ -242,7 +226,7 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
   }
 
   function isMsspOrTenantOrOEM() {
-    const userRole = sessionStorage.getItem('user_role');
+    const userRole = storage.session.get('user_role');
 
     if (userRole === USER_ROLE.MSSP || userRole === USER_ROLE.TENANT) {
       return true;
@@ -259,15 +243,15 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
   function isMenuVisible(menu) {
     var visible = true;
     var id = typeof menu === 'string' ? menu : menu.id;
-    var currentLicenseType = sessionStorage.getItem('current_license_type');
-    var isSubUser = sessionStorage.getItem('is_sub_user');
-    var advancedConfiguration = fwcStorage.get('advancedConfiguration');
-    var isMssp = sessionStorage.getItem('user_role') === USER_ROLE.MSSP;
-    var isMsspAsTenant = sessionStorage.getItem('tenant_id');
+    var currentLicenseType = storage.session.get('current_license_type');
+    var isSubUser = storage.session.get('is_sub_user');
+    var advancedConfiguration = storage.local.get('advancedConfiguration');
+    var isMssp = storage.session.get('user_role') === USER_ROLE.MSSP;
+    var isMsspAsTenant = storage.session.get('tenant_id');
     var appContext = $rootScope.application || $rootScope.template || {};
-    var platform = sessionStorage.getItem('platform');
+    var platform = storage.session.get('platform');
     var isC8 = platform === CLOUD_PLATFORMS.PLAT_C8T.value;
-    var isTenant = sessionStorage.getItem('user_role') === USER_ROLE.TENANT;
+    var isTenant = storage.session.get('user_role') === USER_ROLE.TENANT;
 
     if (['adminmanagement', 'settings'].includes(id)) {
       if (currentLicenseType === 'none' && !isSubUser) visible = false;
@@ -307,5 +291,59 @@ function auth($rootScope, $cookies, $http, waitingScreen, $state, $q) {
     }
 
     return visible;
+  }
+
+  function demoLogin() {
+    return dataService.post('/saml/demo_login', {}).then(
+      function (response) {
+        const {
+          sn,
+          trial_info,
+          permission: user_permission,
+          version,
+          user_data: accountData,
+          authentication,
+          account_id,
+          current_license_type,
+          user_role,
+          mssp_model,
+          platform,
+          is_sub_user,
+          mssp_pool_signup,
+        } = response || {};
+
+        // clear data of last log in
+        storage.session.rm(['tenant_id', 'tenant_name', 'fortinet_expired_notification']);
+        storage.session.set({
+          accountData,
+        });
+
+        //if admin has contract, GUI show tip
+        storage.session.rm('tip_admin_has_contract');
+
+        storage.local.set({
+          sn,
+          trial_info,
+          user_permission,
+          version,
+        });
+
+        storage.session.set({
+          authentication,
+          account_id,
+          user_email: 'demo@fortinet.com',
+          current_license_type,
+          user_role,
+          mssp_model,
+          platform,
+          is_sub_user,
+          mssp_pool_signup,
+        });
+        
+      },
+      function () {
+        // do nothing
+      },
+    );
   }
 }

@@ -1,8 +1,11 @@
-const EventBus = function () {
-  this.listeners = {};
-};
-EventBus.prototype = {
-  addEventListener: function (type, callback, scope) {
+class EventBus {
+  listeners: Record<string, any>;
+
+  constructor() {
+    this.listeners = {};
+  }
+
+  on(type, callback, scope) {
     var args = [];
     var numOfArgs = arguments.length;
     for (var i = 0; i < numOfArgs; i++) {
@@ -14,8 +17,8 @@ EventBus.prototype = {
     } else {
       this.listeners[type] = [{ scope: scope, callback: callback, args: args }];
     }
-  },
-  removeEventListener: function (type, callback, scope) {
+  }
+  un(type, callback, scope) {
     if (typeof this.listeners[type] != 'undefined') {
       var numOfCallbacks = this.listeners[type].length;
       var newArray = [];
@@ -28,8 +31,8 @@ EventBus.prototype = {
       }
       this.listeners[type] = newArray;
     }
-  },
-  hasEventListener: function (type, callback, scope) {
+  }
+  has(type: string, callback: Function, scope: Object) {
     if (typeof this.listeners[type] != 'undefined') {
       var numOfCallbacks = this.listeners[type].length;
       if (callback === undefined && scope === undefined) {
@@ -43,8 +46,8 @@ EventBus.prototype = {
       }
     }
     return false;
-  },
-  dispatch: function (type, target) {
+  }
+  fire(type: string, target: any, ...args: any[]) {
     var event = {
       type: type,
       target: target,
@@ -68,8 +71,8 @@ EventBus.prototype = {
         }
       }
     }
-  },
-  getEvents: function () {
+  }
+  getEvents() {
     var str = '';
     for (var type in this.listeners) {
       var numOfCallbacks = this.listeners[type].length;
@@ -80,7 +83,7 @@ EventBus.prototype = {
       }
     }
     return str;
-  },
-};
+  }
+}
 const eventbus = new EventBus();
 export default eventbus;

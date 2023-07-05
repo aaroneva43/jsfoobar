@@ -1,14 +1,10 @@
-import controllers from './module';
-import _ from 'lodash';
 import angular from 'angular';
-import { pick, flatMapDeep, flatMap } from 'lodash-es';
-import $ from 'jquery';
-
 import { storage } from '../utils/storage';
-
+import module from './module';
 import { FWC_MENU } from '../utils/biz/meta/menu';
 import { OEM } from '../utils/biz/meta/domain';
-import { LINKS } from '../utils/biz/meta/';
+import $ from 'jquery';
+import { pick, flatMapDeep, flatMap } from 'lodash-es';
 
 import { isTemplate, isInTenant } from '../utils/biz/common';
 import {
@@ -23,14 +19,20 @@ import {
   WAF_GATEWAYS,
   ATTACK_LOGS,
 } from '../utils/biz/meta/state';
-import { USER_ROLE, DEMO_USER_EMAIL } from '../utils/biz/meta/index';
+import { USER_ROLE, DEMO_USER_EMAIL, LINKS } from '../utils/biz/meta/index';
 import { CLOUD_PLATFORMS } from '../utils/biz/meta/cloudPlatforms';
+import { react2angular } from 'react18-react2angular';
+// import MyComponent from './root_react.jsx';
 
-controllers.controller('RootController', RootController);
+module.component('root', {
+  templateUrl: 'templates/root.html',
+  controller,
+});
+// module.component('root', react2angular(MyComponent, [], ['$state', '$stateParams', 'auth', 'dataService']));
 
-RootController.$inject = ['$scope', '$rootScope', '$state', '$stateParams', 'auth', 'dataService'];
+controller.$inject = ['$scope', '$rootScope', '$state', '$stateParams', 'auth', 'dataService'];
 
-function RootController($scope, $rootScope, $state, $stateParams, auth, dataService) {
+function controller($scope, $rootScope, $state, $stateParams, auth, dataService) {
   var $ctrl = this;
 
   var configUrl = '/misc/common_config';
