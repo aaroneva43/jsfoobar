@@ -339,7 +339,6 @@ function auth($rootScope, $http, $state, $q, dataService) {
           is_sub_user,
           mssp_pool_signup,
         });
-        
       },
       function () {
         // do nothing
