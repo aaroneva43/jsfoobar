@@ -1,5 +1,0 @@
-/^https?:\/\/overlay-as-a-service-dev\.forticloud\.com\/((admin|topology).*)$/ {{dev_server_addr}}/dist/
-/^https?:\/\/overlay-as-a-service-dev\.forticloud\.com\/(.+)\.(js|jsx|tsx|mjs|css|less|html|woff2|woff|json|png|svg|ttf|ico)(\?.+)?$/ {{dev_server_addr}}/dist/$1.$2$3
-
-/^https?:\/\/overlay-as-a-service-dev\.forticloud\.com\/((admin|topology).*)$/ js://{w2tip}
-/^https?:\/\/overlay-as-a-service-dev\.forticloud\.com\/(.+)?$/ {{server_ip_addr}}/$1

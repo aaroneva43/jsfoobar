@@ -1,5 +1,0 @@
-/^https?:\/\/((beta-portal|dev)\.)?fortigslb(-cloud)?\.com\/$/ 127.0.0.1:6001/
-/^https?:\/\/((beta-portal|dev)\.)?fortigslb(-cloud)?\.com\/((index|root).*)?$/ js://{w2tip}
-/^wss:\/\/localhost:6001\/(.*)$/ {{dev_server_addr}}/$1
-
-/^https?:\/\/[^\/]+\/api\/(v\d\.?\d?\/.+)$/ {{mock_server_addr}}/$1
