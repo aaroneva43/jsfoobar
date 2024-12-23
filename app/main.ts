@@ -1,4 +1,4 @@
-import { debounceTime, distinct, fromEvent, interval, map, scan, switchMap, throttleTime, } from 'rxjs';
+import { debounceTime, distinct, fromEvent, interval, map, scan, switchMap, tap, throttleTime, } from 'rxjs';
 import fn from './fn';
 
 
@@ -57,8 +57,14 @@ import fn from './fn';
 
 	fromEvent(btn3, 'click')
 		.pipe(
+			tap((e: MouseEvent) => {
+				console.log('click incoming', [e.pageX, e.pageY], new Date(e.timeStamp).toLocaleString());
+			}),
 			debounceTime(1000),
-			scan((acc) => {
+			tap((e) => {
+				console.log('click outcoming', [e.pageX, e.pageY], new Date(e.timeStamp).toLocaleString());
+			}),
+			scan((acc, e) => {
 				return acc + 1;
 			}, 0)
 		)
